@@ -1,0 +1,13 @@
+[Unit]
+Description={{cache}} Sentinel
+After=network.target
+
+[Service]
+LimitNOFILE=1048576
+User={{cache}}sentinel
+Group={{cache}}sentinel
+ExecStart=/etc/{{cache}}/redis-server /etc/{{cache}}/{{cache}}_sentinel.conf --sentinel
+ExecStop=/etc/{{cache}}/redis-cli shutdown
+Restart=always
+[Install]
+WantedBy=multi-user.target

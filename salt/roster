@@ -1,0 +1,23 @@
+web1:
+  host: saltlabmin09
+  user: root
+  passwd: 9+Atn9FATawm
+
+server2:
+  host: tower81.cotestdev.local
+  user: svc_ansible
+  passwd: 1Hundred%
+
+ldcsaltmin006:
+  host: ldcsaltmin006
+  user: svc_ansible
+  passwd: 1Hundred%
+  sudo: True
+  no-host-keys: True
+
+saltlabmin129:
+  host: saltlabmin129
+  user: svc_saltstack
+  passwd: 1Hundred%
+  sudo: True
+  no-host-keys: true

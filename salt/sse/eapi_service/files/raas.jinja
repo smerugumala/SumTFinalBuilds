@@ -1,0 +1,94 @@
+# The customer_id sets up the unique namespace in the database
+customer_id: {{ sse_customer_id }}
+
+# Define SSL communication settings
+{%- if sse_eapi_ssl_enabled %}
+tls_minimum: 1.2
+tls_crt: /etc/pki/raas/certs/localhost.crt
+tls_key: /etc/pki/raas/certs/localhost.key
+port: 443
+{%- else %}
+port: 80
+{%- endif %}
+
+# The sql backend config, the dialect chooses which sql backend
+# We are only supporting postgres at this time
+sql:
+  dialect: postgresql
+  host: {{ sse_pg_endpoint }}
+  port: {{ sse_pg_port }}
+  driver: psycopg2
+  ssl: True
+
+# Caching Options
+background_workers:
+  combined_process: True
+  max_tasks: 100000
+  max_memory: 1048576
+
+redis:
+  url: redis://{{ sse_redis_endpoint }}:{{ sse_redis_port }}
+
+# Time in seconds to begin reporting minions as "lost" if not heard from
+raas_presence_expiration: 3600
+
+# Enable xsrf handling for API
+tornado_xsrf_cookies_enabled: True
+
+# Enable the access audit log, this allows for tracking of all historic
+# access to the raas apis
+audit:
+  enabled: false
+  valid_logins: false
+
+# Logging options
+#log_file_loglevel: debug
+#log_level: debug
+
+# Granular logging options
+#log_granular_levels:
+#  tornado.access: debug
+
+sec:
+  ingest_override: true
+  locke_dir: locke
+  post_ingest_cleanup: true
+  username: 'secops'
+  content_url: 'https://enterprise.saltstack.com/secops_downloads'
+  download_enabled: true
+  download_frequency: 86400
+  stats_snapshot_interval: 3600
+  ingest_on_boot: true
+
+# AD/LDAP driver configuration
+#authers:
+#  ldap:
+#    # Allowed log levels
+#    # - OFF       # nothing is logged
+#    # - ERROR     # only exceptions are logged
+#    # - BASIC     # library activity is logged, only operation result is shown
+#    # - PROTOCOL  # LDAPv3 operations are logged, sent requests and received responses are shown
+#    # - NETWORK   # socket activity is logged
+#    # - EXTENDED  # ldap messages are decoded and properly printed
+#    log_level: ERROR
+#    ssl:
+#      # Allowed ciphers values
+#      # - TLSv1.2
+#      # - SSLv23  # Default value selected if not defined when the
+#      #           # AD auth config has use_ssl set to True
+#      ciphers: SSLv23
+#      ca_cert: /path/to/ca_cert.pem
+#      client_key = /path/to/client.key
+#      client_cert = /path/to/client.pem
+
+vman:
+  vman_dir: vman                        # Location where SaltStack content in expanded before ingestion. If the path is relative (no leading slash), then it is relative to the RAAS cache dir (ENV Var: SSE_VMAN_DIR)
+  download_enabled: true                # If True, SaltStack content downloading is enabled. (should be False for air gapped systems) (ENV Var: SSE_VMAN_DOWNLOAD_ENABLED)
+  download_frequency: 86400             # The frequency in seconds of automated SaltStack Vulnerability Management content downloads and ingestion. (ENV Var: SSE_VMAN_DOWNLOAD_FREQUENCY)
+  username: vman                        # Username used to log in to enterprise.saltstack.com to get content (ENV Var: SSE_VMAN_USERNAME)
+  content_url: 'https://enterprise.saltstack.com/vman_downloads' # URL from which SaltStack Vulnerability Management content will be downloaded. (ENV Var: SSE_VMAN_CONTENT_URL)
+  ingest_on_boot: true                  # If True, SaltStack Vulnerability Management content will be downloaded and ingested soon after RAAS boot (ENV Var: SSE_VMAN_INGEST_ON_BOOT)
+  compile_stats_interval: 60            # Interval in seconds between times that the compile stats will be gathered. (ENV Var: SSE_VMAN_COMPILE_STATS_INTERVAL)
+  stats_snapshot_interval: 3600         # Interval in seconds between when stats for VMan will be gathered (ENV Var: SSE_VMAN_STATS_SNAPSHOT_INTERVAL)
+  old_policy_file_lifespan: 2           # The lifespan of old policy files in days that will remain in the RAAS file system
+  delete_old_policy_files_interval: 86400 # The interval in seconds between times that theold vman policy files in the RAAS file system will be deleted

@@ -1,0 +1,23 @@
+{% if pillar['datacenter']  == 'LDC' %}
+%application-admins             ALL=(ALL)       ALL
+  {% if pillar['role']|last == 'D' %}
+%dev_dba                         ALL=(ALL)       ALL
+  {% endif %}
+{% elif pillar['datacenter']  == 'PCM' %}
+%od_application_admins_pci      ALL=(ALL)       ALL
+  {% if pillar['role']|last == 'D' %}
+%od_dba_pci                     ALL=(ALL)       ALL
+  {% endif %}
+{% else %}
+%od_application_admins          ALL=(ALL)       ALL
+  {% if pillar['role']|last == 'D' %}
+%od_dba                         ALL=(ALL)       ALL
+  {% endif %}
+{% endif %}
+# BEGIN AUTOMATION MANAGED BLOCK
+codeploy                ALL=(ALL)       NOPASSWD: ALL
+vra-admin               ALL=(ALL)       NOPASSWD: ALL
+svc_ansible             ALL=(ALL)       NOPASSWD: ALL
+svc_vra_vro_pwrshell    ALL=(ALL)       NOPASSWD: ALL
+svc_ansuser             ALL=(ALL)       NOPASSWD: ALL
+# END AUTOMATION MANAGED BLOCK

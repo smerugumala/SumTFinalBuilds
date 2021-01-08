@@ -1,0 +1,16 @@
+[Unit]
+Description=Redis In-Memory Data Store
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+LimitNOFILE=1048576
+User=redis
+Group=redis
+PIDFile=/var/run/redis_6379.pid
+TimeoutStopSec=0
+ExecStart=/opt/redis-6.0.5/src/redis-server /etc/redis/{{role}}_redis.conf
+ExecStop=/opt/redis-6.0.5/src/redis-cli shutdown
+Restart=always
+[Install]
+WantedBy=multi-user.target

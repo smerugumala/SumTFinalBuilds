@@ -1,0 +1,3 @@
+{% for host in dict_hosts %}
+{{host}}
+{% endfor %}

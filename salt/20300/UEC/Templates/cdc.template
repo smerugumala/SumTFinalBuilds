@@ -1,0 +1,12 @@
+[Unit]
+Description=CDCDaemon
+
+[Service]
+User={{ user }}
+Group={{ group }}
+ExecStart={{ start }}/cdc/SumTotal.EventGenerator.CDCProcessorHost
+WorkingDirectory={{ work_location }}/cdc
+
+
+[Install]
+WantedBy=default.target

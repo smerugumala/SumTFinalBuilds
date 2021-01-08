@@ -1,0 +1,44 @@
+# Set ID to override default name for this master that will display in the UI
+id: {{ grains.id }}
+
+# Set the cluster ID that this Salt Master belongs to
+sseapi_cluster_id: {{ eapi_cluster_id }}
+
+# Set if multiple masters configurations are "active" or "failover"
+sseapi_failover_master: {{ eapi_failover_master }}
+
+# Enable the eAPI engine
+engines:
+  - sseapi: {}
+  - eventqueue: {}
+  - rpcqueue: {}
+  - jobcompletion: {}
+
+# Enable eAPI as a Master Job Cache and event returner
+master_job_cache: sseapi
+event_return: sseapi
+
+# Specify eAPI connection settings
+sseapi_server: {{ eapi_url }}
+sseapi_ssl_validate_cert: {{ eapi_ssl_validation }}
+
+# How frequently should the RaaS engine running on each master poll RaaS
+# for commands targeting the given master and how often should the engine
+# poll the master for data (minions, grains, file system) changes.
+sseapi_poll_interval: 10
+
+# Timeout for eAPI requests
+sseapi_request_timeout: 60
+
+# Specify the update interval
+sseapi_update_interval: 60
+
+# Enable fileserver backends to use eAPI first, then local filesystem
+fileserver_backend:
+  - sseapi
+  - roots
+
+# Enable the eAPI external pillar
+ext_pillar:
+  - sseapi: {}
+

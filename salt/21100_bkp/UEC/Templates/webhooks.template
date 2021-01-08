@@ -1,0 +1,11 @@
+[Unit]
+Description=WebhooksDaemon
+
+[Service]
+User={{ user }}
+Group={{ group }}
+ExecStart={{ start }}/webhooks/SumTotal.Webhook.ProcessorHost
+WorkingDirectory={{ work_location }}/webhooks
+
+[Install]
+WantedBy=default.target

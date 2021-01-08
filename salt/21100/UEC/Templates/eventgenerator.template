@@ -1,0 +1,11 @@
+[Unit]
+Description=EventGeneratorDaemon
+
+[Service]
+User={{ user }}
+Group={{ group }}
+ExecStart={{ start }}/eventgenerator/SumTotal.EventGenerator.ProcessorHost
+WorkingDirectory={{ work_location }}/eventgenerator
+
+[Install]
+WantedBy=default.target

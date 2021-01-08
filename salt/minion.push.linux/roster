@@ -1,0 +1,9 @@
+web1:
+  host: saltlabmin08
+  user: root
+  passwd: 9+Atn9FATawm
+
+server2:
+  host: tower81.cotestdev.local
+  user: svc_ansible
+  passwd: 1Hundred%

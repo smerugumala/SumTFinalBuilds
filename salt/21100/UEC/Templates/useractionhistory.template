@@ -1,0 +1,12 @@
+[Unit]
+Description=UserActionHistory
+
+[Service]
+User={{ user }}
+Group={{ group }}
+ExecStart={{ start }}/useractionhistory/SumTotal.UserActionHistory.ProcessHost
+WorkingDirectory={{ work_location }}/useractionhistory
+
+
+[Install]
+WantedBy=default.target

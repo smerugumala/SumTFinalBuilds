@@ -1,0 +1,15 @@
+[Unit]
+Description=kafka
+Requires=network-online.target
+After=network-online.target remote-fs.target zookeeper.service
+
+[Service]
+Type=forking
+User={{ user }}
+Group={{ group }}
+#Environment=KAFKA_OPTS=-Djava.security.auth.login.config={{kafka_install_path}}/config/kafka_server_jaas.conf
+ExecStart={{kafka_install_path}}/bin/kafka-server-start.sh  -daemon {{kafka_install_path}}/config/server.properties
+ExecStop={{kafka_install_path}}/bin/kafka-server-stop.sh
+
+[Install]
+WantedBy=multi-user.target

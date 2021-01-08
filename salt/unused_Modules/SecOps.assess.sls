@@ -1,0 +1,3 @@
+Run Assessment:
+  cmd.run:
+    - name: curl -k --location --request POST 'https://172.26.75.150/rpc' --header 'X-Xsrftoken: _xsrf=2|ae4961f3|9c3ff92cfdd4f3728c685f30b3c94fce|1600282153' --header 'Authorization: Basic cm9vdDpzYWx0' --header 'Content-Type: text/plain' --header 'Cookie: raas-session="2|1:0|10:1600349937|12:raas-session|68:aW50ZXJuYWw6cm9vdDoxZjQwMGYwMi1hZjRlLTExZWEtOTY1Ny0wMDUwNTY5YTcwMGU=|01c933c1aff696f8a7866d2319a009690750314ff7c0e6022e8fd4f47c6d61f3"' --data '{"resource": "sec","method": "assess_policy","kwarg": {"policy_uuid": "1c1c861a-9f86-4b34-ab89-b01f36520457"}}'

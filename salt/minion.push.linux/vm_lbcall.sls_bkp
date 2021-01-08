@@ -1,0 +1,84 @@
+{% set sg = 'ldc_salt_enterprise' %}
+{% set servers = ['ldcsaltent004', 'ldcsaltent003'] %}
+{% set IP = ['172.26.75.236', '172.26.75.234'] %}
+
+
+Check servicegroup:
+  salt.function:
+    - name: netscaler.servicegroup_exists
+    - tgt: 'tower82.cotestdev.local'
+    - arg:
+      - {{ sg }}
+
+
+{% for server in servers %}
+Check {{ server }} in sg:
+  salt.function:
+    - name: netscaler.servicegroup_server_exists
+    - tgt: 'tower82.cotestdev.local'
+    - arg:
+      - {{ sg }}
+      - {{ server }}
+    - require:
+      - salt: Check servicegroup
+
+Check {{ server }} status:
+  salt.function:
+    - name: netscaler.servicegroup_server_up
+    - tgt: 'tower82.cotestdev.local'
+    - arg:
+      - {{ sg }}
+      - {{ server }}
+      - 80
+    - requires:
+      - salt: Check {{ server }} in sg
+    - onlyif:
+      - {{ pillar['action'] }} == 'disable'
+
+Check server enabled globally {{ server }}: 
+  salt.function:
+    - name: netscaler.server_enabled
+    - tgt: 'tower82.cotestdev.local'
+    - arg:
+      - {{ server }}
+    - require:
+      - salt : Check {{ server }} status
+{% endfor %}
+
+
+{% for i in range(0,servers|length) %}
+{% if i is divisibleby 2 %}
+Server disable in {{ sg }} {{ i }}:
+  salt.function:
+    - name: netscaler.servicegroup_server_{{ pillar['action'] }}
+    - tgt: 'tower82.cotestdev.local'
+    - arg:
+      - {{ sg }}
+      - {{ servers[i] }}
+      - {{ IP[i] }}
+    - require:
+      - salt: Check server enabled globally {{ servers[i] }}
+
+
+server-warning-message {{ servers[i] }}:
+  smtp.send_msg:
+    - name: This email from Salt Master - There were NO changes happened in the loadbalacer - {{ sg }}
+    - use_ssl: True
+    - sender: SaltMaster
+    - recipient: saikrishna.merugumala@sumtotalsystems.com
+    - subject: Loadbalancing Changes Fail
+    - onfail: 
+      - Server disable in {{ sg }} {{ i }}
+
+server-success-message {{ servers[i] }}:
+  smtp.send_msg:
+    - name: This email from Salt Master - To inform this server {{ servers[i] }} is {{ pillar['action'] }}d from the LoadBalancer {{ sg }}
+    - use_ssl: True
+    - sender: SaltMaster
+    - recipient: saikrishna.merugumala@sumtotalsystems.com
+    - subject: Loadbalancing Changes Success
+    - onchanges:
+      - Server disable in {{ sg }} {{ i }}
+{% endif %}
+{% endfor %}
+
